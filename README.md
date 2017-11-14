@@ -17,11 +17,9 @@ This is my first time using scrapy framework to crawl data. It is a very powerfu
 
 ## Result
 
-1. Job Information
-</br>
-![scrapy](/job_info.jpg) </br>
-2. Company Information
-</br>
+Job Information </br>
+![scrapy](/job_info.jpg)  </br>
+Company Information </br>
 ![scrapy](/company_info.jpg) </br>
 
 ## References
