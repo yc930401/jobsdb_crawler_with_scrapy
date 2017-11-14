@@ -6,19 +6,18 @@ from jobsdb.items import JobItem, EmployerItems
 class JobsdbSpiderSpider(scrapy.Spider):
     name = 'jobsdb_spider'
     allowed_domains = ['jobsdb.com/sg'] #domains allowed
-    start_urls = ['https://sg.jobsdb.com/sg']
+    start_urls = ['https://sg.jobsdb.com/sg/en/browse']
 
     def parse(self, response):
         sel = scrapy.Selector(response)
-        category = sel.xpath('//div[@class="innerpane clearfix"]/a')
+        category = sel.xpath('//div[@class="card"][3]/dl/dd/div/a')
         category_hrefs = category.xpath('@href').extract()
-        category_titles = category.xpath('@title').extract()
+        category_titles = category.xpath('text()').extract()
         for href, title in zip(category_hrefs, category_titles):
             job_item = JobItem()
             job_item['job_category'] = title
-            url = self.start_urls[0][:-3]+href
-            print('111111111------------------------------', url)
-            yield scrapy.Request(url=url, callback=self.parse_job_list, dont_filter=True, meta={'job_item': job_item})
+            print('111111111------------------------------', href)
+            yield scrapy.Request(url=href, callback=self.parse_job_list, dont_filter=True, meta={'job_item': job_item})
 
 
     def parse_job_list(self, response):
@@ -96,7 +95,7 @@ class JobsdbSpiderSpider(scrapy.Spider):
             employer_industry = ''
 
         if sel.xpath('//a[@class="loc-link"]/@href').extract():
-            employer_location = sel.xpath('//a[@class="loc-link"]/@href').extract()[0]
+            employer_location = sel.xpath('//a[@class="loc-link"]/text()').extract()[0]
         else:
             employer_location = ''
         if sel.xpath('//h2[@class="jobad-header-company ad-y-auto-txt1"]/text()').extract():
